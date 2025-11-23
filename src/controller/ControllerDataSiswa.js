@@ -1,95 +1,75 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const getAllDataSiswa = async (req, res) => {
+exports.getAllDataSiswa = async (req, res) => {
   try {
-    const data = await prisma.dataSiswa.findMany();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: "Gagal mengambil data siswa." });
-  }
-};
-
-const getDataSiswaById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const siswa = await prisma.dataSiswa.findUnique({
-      where: { id: Number(id) },
-    });
-
-    if (!siswa) return res.status(404).json({ error: "Data tidak ditemukan" });
-
+    const siswa = await prisma.dataSiswa.findMany();
     res.json(siswa);
-  } catch (err) {
-    res.status(500).json({ error: "Gagal mengambil detail siswa" });
-    res.status(500).json({ error: "Gagal mengambil produk berdasarkan ID." });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
-const createDataSiswa = async (req, res) => {
+exports.getDataSiswaById = async (req, res) => {
   try {
-    const { kode_siswa } = req.body;
-
-    const existing = await prisma.DataSiswa.findUnique({
-      where: { kode_siswa },
+    const siswa = await prisma.dataSiswa.findUnique({
+      where: { id: Number(req.params.id) },
     });
+    res.json(siswa);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-    if (existing) {
-      return res.status(400).json({ error: "Kode Siswa sudah digunakan." });
-    }
+exports.createDataSiswa = async (req, res) => {
+  try {
+    const siswa = await prisma.dataSiswa.create({
+      data: req.body,
+    });
+    res.status(201).json(siswa);
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
+};
 
-    const data = await prisma.dataSiswa.create({
+exports.updateDataSiswa = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { kode_siswa, nama_siswa, alamat, tgl_siswa, jurusan } = req.body;
+
+    const siswa = await prisma.dataSiswa.update({
+      where: { id },
       data: {
-        kode_siswa: Number(req.body.kode_siswa),
-        nama_siswa: req.body.nama_siswa,
-        alamat: req.body.alamat,
-        tgl_siswa: new Date(req.body.tgl_siswa),
-        jurusan: req.body.jurusan,
+        kode_siswa,
+        nama_siswa,
+        alamat,
+        tgl_siswa: tgl_siswa
+          ? new Date(tgl_siswa).toISOString()
+          : undefined,
+        jurusan,
       },
     });
-    res.status(201).json(data);
-  } catch (err) {
-     console.error("create Data Siswa Error:", err);
-    res.status(500).json({ error: "Gagal membuat data baru." });
-  }
-};
 
-const updateDataSiswa = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const data = await prisma.dataSiswa.update({
-      where: { id: Number(id) },
-      data: {
-        kode_siswa: req.body.kode_siswa,
-        nama_siswa: req.body.nama_siswa,
-        alamat: req.body.alamat,
-        tgl_siswa: new Date(req.body.tgl_siswa),
-        jurusan: req.body.jurusan,
-      },
+    res.status(200).json({
+      msg: "Data berhasil diperbarui",
+      data: siswa,
     });
-    res.json(data);
-  } catch (err) {
-    console.error("update Data Siswa Error:", err);
-    res.status(500).json({ error: "Gagal memperbarui data siswa." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      msg: "Gagal update data!",
+      error: error.message,
+    });
   }
 };
 
-const deleteDataSiswa = async (req, res) => {
+exports.deleteDataSiswa = async (req, res) => {
   try {
-    const { id } = req.params;
     await prisma.dataSiswa.delete({
-      where: { id: Number(id) },
+      where: { id: Number(req.params.id) },
     });
-    res.json({ message: "Data siswa berhasil dihapus" });
-  } catch (err) {
-    res.status(500).json({ error: "Gagal menghapus data siswa." });
+    res.json({ msg: "Data berhasil dihapus" });
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
   }
-};
-
-module.exports = {
-  getAllDataSiswa,
-  getDataSiswaById,
-  createDataSiswa,
-  updateDataSiswa,
-  deleteDataSiswa,
 };

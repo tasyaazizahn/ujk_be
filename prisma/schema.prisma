@@ -13,11 +13,11 @@ datasource db {
   url = env("DATABASE_URL")
 }
 
-model DataSiswa{
-  id Int  @id @default(autoincrement())
-  kode_siswa Int
-  nama_siswa String 
-  alamat     String
-  tgl_siswa  DateTime
-  jurusan    String
+model DataSiswa {
+  id          Int      @id @default(autoincrement())
+  kode_siswa  String   
+  nama_siswa  String
+  alamat      String
+  tgl_siswa   String   
+  jurusan     String
 }
