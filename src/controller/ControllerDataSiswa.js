@@ -23,14 +23,24 @@ exports.getDataSiswaById = async (req, res) => {
 
 exports.createDataSiswa = async (req, res) => {
   try {
+    console.log("Payload diterima:", req.body);
+    const { kode_siswa, nama_siswa, alamat, tgl_siswa, jurusan } = req.body;
     const siswa = await prisma.dataSiswa.create({
-      data: req.body,
+      data: {
+        kode_siswa,
+        nama_siswa,
+        alamat,
+        tgl_siswa: req.body.tgl_siswa ? new Date(req.body.tgl_siswa) : null,
+        jurusan,
+      },
     });
     res.status(201).json(siswa);
   } catch (error) {
+    console.error(error);
     res.status(400).json({ msg: error.message });
   }
 };
+
 
 exports.updateDataSiswa = async (req, res) => {
   try {
@@ -43,9 +53,7 @@ exports.updateDataSiswa = async (req, res) => {
         kode_siswa,
         nama_siswa,
         alamat,
-        tgl_siswa: tgl_siswa
-          ? new Date(tgl_siswa).toISOString()
-          : undefined,
+        tgl_siswa: new Date(tgl_siswa),
         jurusan,
       },
     });

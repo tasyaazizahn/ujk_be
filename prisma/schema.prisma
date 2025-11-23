@@ -18,6 +18,6 @@ model DataSiswa {
   kode_siswa  String   
   nama_siswa  String
   alamat      String
-  tgl_siswa   String   
+  tgl_siswa   DateTime  
   jurusan     String
 }

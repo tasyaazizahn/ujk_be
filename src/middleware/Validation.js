@@ -13,7 +13,7 @@ const validateDataSiswa = (req, res, next) => {
         if (!data.alamat || typeof data.alamat !== "string") {
             errors.push("alamat wajib diisi dan harus berupa string");
         }
-        if (!data.tgl_siswa || typeof data.tgl_siswa !== "string" || isNaN(Date.parse(data.tgl_siswa))) {
+        if (!data.tgl_siswa || isNaN(Date.parse(data.tgl_siswa))) {
             errors.push("tgl_siswa wajib dan harus format tanggal valid (contoh: 1999-11-24)");
         }
         if (!data.jurusan || typeof data.jurusan !== "string") {
