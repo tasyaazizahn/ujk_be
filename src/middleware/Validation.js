@@ -16,10 +16,6 @@ const validateDataSiswa = (req, res, next) => {
         errors.push("alamat wajib diisi dan harus berupa string")
     }
 
-    // if(typeof data.harga !== "number" || data.harga <= 0) {
-    //     errors.push("stok harus angka dan tidak boleh negatif");
-    // }
-
     if(typeof data.tanggal_siswa && typeof data.tanggal_siswa !== "DateTime") {
         errors.push("tanggal_siswa harus berupa DateTime jika diisi");
     }
